@@ -31,7 +31,9 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
     setIsDeployingMessage("Deploying...");
     const response = await axios.post(`${BACK_URL}/vms/deployVm/${id}`);
     if (response.data) {
-      setResponse(response.data);
+      console.log(response);
+      setResponse(JSON.stringify(response.data, null, 2));
+      //setResponse(response.data);
       setIsDeployingMessage("");
     }
     setIsDeploying(false);
@@ -42,7 +44,8 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
     setIsStartingMessage("Starting...");
     const response = await axios.post(`${BACK_URL}/vms/startVm/${id}`);
     if (response.data) {
-      setResponse(response.data);
+      //setResponse(response.data);
+      setResponse(JSON.stringify(response.data, null, 2));
       setIsStartingMessage("");
     }
     setIsStarting(false);
@@ -53,7 +56,8 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
     setIsStopingMessage("Stoping...");
     const response = await axios.post(`${BACK_URL}/vms/stopVm/${id}`);
     if (response.data) {
-      setResponse(response.data);
+      //setResponse(response.data);
+      setResponse(JSON.stringify(response.data, null, 2));
       setIsStopingMessage("");
     }
     setIsStoping(false);
@@ -64,7 +68,7 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
     setIsDeletingMessage("Deleting...");
     const response = await axios.post(`${BACK_URL}/vms/deleteVm/${id}`);
     if (response.data) {
-      setResponse(response.data);
+      setResponse(JSON.stringify(response.data, null, 2));
       setIsDeletingMessage("");
     }
     setIsDeleting(false);
@@ -87,8 +91,8 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
               <div>
                 <button
                   className="btn  btn-primary"
-                  disabled={status !== "Creating"}
                   onClick={() => deploy(id || "")}
+                  disabled={status !== "Creating"}
                 >
                   {isDeploying ? (
                     <span
@@ -109,7 +113,6 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
               <div>
                 <button
                   className="btn  btn-success"
-                  disabled={status === "Creating"}
                   onClick={() => start(id || "")}
                 >
                   {isStarting ? (
@@ -131,7 +134,6 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
               <div>
                 <button
                   className="btn  btn-danger"
-                  disabled={status === "Creating"}
                   onClick={() => stop(id || "")}
                 >
                   {isStoping ? (
@@ -153,7 +155,6 @@ const VMActionsModal: React.FC<CreateVMModalProps> = ({
               <div>
                 <button
                   className="btn  btn-danger"
-                  disabled={status === "Creating"}
                   onClick={() => deleting(id || "")}
                 >
                   {isDeleting ? (

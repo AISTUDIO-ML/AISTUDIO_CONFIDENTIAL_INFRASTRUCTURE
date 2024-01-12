@@ -1,6 +1,7 @@
 // src/vms/dto/create-vm.dto.ts
 
 export class CreateVmDto {
+    id: string;
     resourceGroup: string;
     vmName: string;
     region: string;
