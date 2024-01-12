@@ -3,49 +3,21 @@ import { IVM } from "./VMs";
 
 interface CreateVMModalProps {
   isOpen: boolean;
-  resourceGroup: string;
   onSave: (payload:IVM) => void;
   onCancel: () => void;
-  isLoading:boolean
+  isLoading:boolean;
+  newVM:IVM;
+  setNewVM:(payload:IVM) => void;
 }
 
 const CreateVMModal: React.FC<CreateVMModalProps> = ({
   isOpen,
-  resourceGroup,
   onSave,
   onCancel,
-  isLoading
+  isLoading,
+  newVM,
+  setNewVM
 }) => {
-  const [newVM, setNewVM] = useState({
-    resourceGroup: resourceGroup,
-    vmName: "",
-    region: "",
-    vmSize: "",
-    osImageId: "",
-    osImageName: "",
-    securityType: "",
-    adminUsername: "",
-    adminPasswordOrKey: "",
-    authenticationType: "",
-    status:"",
-  });
-
-  useEffect(() => {
-    if(isOpen)
-    setNewVM({
-      resourceGroup: resourceGroup,
-      vmName: "",
-      region: "",
-      vmSize: "Standard_DC2as_v5",
-      osImageId: "",
-      osImageName: "",
-      securityType: "ConfidentialVM",
-      adminUsername: "azureuser",
-      adminPasswordOrKey: "azureuUser!123",
-      authenticationType: "login",
-      status:"Creating"
-    });
-  }, [isOpen,resourceGroup]);
 
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     setNewVM({ ...newVM, [e.target.name]: e.target.value });
@@ -82,6 +54,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 type="text"
                 className="form-control w-75 "
                 name="vmName"
+                disabled={Boolean(newVM.id)}
                 value={newVM.vmName}
                 onChange={handleInputChange}
               />
@@ -92,6 +65,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 className="form-control w-75"
                 name="region"
                 value={newVM.region}
+                disabled={Boolean(newVM.id)}
                 onChange={handleInputChange}
               >
                 <option value=""></option>
@@ -117,6 +91,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 name="osImageId"
                 value={newVM.osImageId}
                 onChange={handleOSImageChange}
+                disabled={Boolean(newVM.id)}
               >
                 <option value=""></option>
                 <option value="id1">
@@ -144,6 +119,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 type="text"
                 className="form-control w-75 "
                 name="adminUsername"
+                disabled={Boolean(newVM.id)}
                 value={newVM.adminUsername}
                 onChange={handleInputChange}
               />
@@ -154,6 +130,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 type="text"
                 className="form-control w-75 "
                 name="adminPasswordOrKey"
+                disabled={Boolean(newVM.id)}
                 value={newVM.adminPasswordOrKey}
                 onChange={handleInputChange}
               />
@@ -169,9 +146,31 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 onChange={handleInputChange}
               />
             </div>
+            {Boolean(newVM.id)&&<div className="d-flex mb-2  align-items-center ">
+              <h6 className="w-25 ">Public IP</h6>
+              <input
+                type="text"
+                className="form-control w-75 "
+                name="publicIp"
+                disabled
+                value={newVM.publicIp}
+                onChange={handleInputChange}
+              />
+            </div>}
+            {Boolean(newVM.id)&&<div className="d-flex mb-2  align-items-center ">
+              <h6 className="w-25 ">Status</h6>
+              <input
+                type="text"
+                className="form-control w-75 "
+                name="status"
+                disabled
+                value={newVM.status}
+                onChange={handleInputChange}
+              />
+            </div>}
           </div>
           <div className="modal-footer">
-            <button
+            {!Boolean(newVM.id)&&<button
               onClick={()=>{onSave(newVM)}}
               className="btn btn-primary"
               disabled={
@@ -188,7 +187,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
               }
             >
               Save
-            </button>
+            </button>}
             <button onClick={onCancel} className="btn btn-danger" disabled={isLoading}>
               Cancel
             </button>
