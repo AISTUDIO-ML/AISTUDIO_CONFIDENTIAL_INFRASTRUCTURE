@@ -44,6 +44,7 @@ export class TenantsService {
       console.log('Delete result of resource group: ', res);
       await sql.connect(this.dbConfig);
       await sql.query`DELETE FROM tenants WHERE resourceGroup = ${id}`;
+      await sql.query`DELETE FROM vms WHERE resourceGroup = ${id}`;
       return id;
     } catch (err) {
       console.error('SQL error', err);
