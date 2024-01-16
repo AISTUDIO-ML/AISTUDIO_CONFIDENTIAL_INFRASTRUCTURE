@@ -99,7 +99,10 @@ export class VmsService {
         const vm = result.recordset[0];
         if( vm ){
             console.log('inside');
-            const retur = await createAndDeployVm(vm);
+            const os_image_res = await sql.query`SELECT * FROM os_images WHERE id = ${vm.osImageId}`;
+            const os_image = os_image_res.recordset[0];
+            console.log(os_image);
+            const retur = await createAndDeployVm(vm, os_image);
             if (retur && retur.publicIPInfo && retur.publicIPInfo.ipAddress) {
                 const publicIpAddress = retur.publicIPInfo.ipAddress;
         

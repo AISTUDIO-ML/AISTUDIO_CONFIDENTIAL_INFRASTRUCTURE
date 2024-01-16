@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { IVM } from "./VMs";
+import { IVM, IOsImage } from "./VMs";
 
 interface CreateVMModalProps {
   isOpen: boolean;
-  onSave: (payload:IVM) => void;
+  onSave: (payload: IVM) => void;
   onCancel: () => void;
-  isLoading:boolean;
-  newVM:IVM;
-  setNewVM:(payload:IVM) => void;
+  isLoading: boolean;
+  newVM: IVM;
+  setNewVM: (payload: IVM) => void;
+  osImages: IOsImage[];
 }
 
 const CreateVMModal: React.FC<CreateVMModalProps> = ({
@@ -16,9 +17,9 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
   onCancel,
   isLoading,
   newVM,
-  setNewVM
+  setNewVM,
+  osImages,
 }) => {
-
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     setNewVM({ ...newVM, [e.target.name]: e.target.value });
   };
@@ -27,11 +28,7 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
     setNewVM({
       ...newVM,
       [e.target.name]: e.target.value,
-      osImageName: e.target.value
-        ? e.target.value === "id1"
-          ? "Windows 11 Pro, version 22H2 - x64 Gen2"
-          : "Ubuntu Server 22.04 LTS (Confidential VM) - x64 Gen2"
-        : "",
+      osImageName: osImages.find((i) => i.id === e.target.value)?.name || "",
     });
   };
 
@@ -94,12 +91,9 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 disabled={Boolean(newVM.id)}
               >
                 <option value=""></option>
-                <option value="id1">
-                  Windows 11 Pro, version 22H2 - x64 Gen2
-                </option>
-                <option value="id2">
-                  Ubuntu Server 22.04 LTS (Confidential VM) - x64 Gen2
-                </option>
+                {osImages.map((i) => (
+                  <option value={i.id}>{i.name}</option>
+                ))}
               </select>
             </div>
             <div className="d-flex mb-2  align-items-center ">
@@ -146,49 +140,62 @@ const CreateVMModal: React.FC<CreateVMModalProps> = ({
                 onChange={handleInputChange}
               />
             </div>
-            {Boolean(newVM.id)&&<div className="d-flex mb-2  align-items-center ">
-              <h6 className="w-25 ">Public IP</h6>
-              <input
-                type="text"
-                className="form-control w-75 "
-                name="publicIp"
-                disabled
-                value={newVM.publicIp}
-                onChange={handleInputChange}
-              />
-            </div>}
-            {Boolean(newVM.id)&&<div className="d-flex mb-2  align-items-center ">
-              <h6 className="w-25 ">Status</h6>
-              <input
-                type="text"
-                className="form-control w-75 "
-                name="status"
-                disabled
-                value={newVM.status}
-                onChange={handleInputChange}
-              />
-            </div>}
+            {Boolean(newVM.id) && (
+              <div className="d-flex mb-2  align-items-center ">
+                <h6 className="w-25 ">Public IP</h6>
+                <input
+                  type="text"
+                  className="form-control w-75 "
+                  name="publicIp"
+                  disabled
+                  value={newVM.publicIp}
+                  onChange={handleInputChange}
+                />
+              </div>
+            )}
+            {Boolean(newVM.id) && (
+              <div className="d-flex mb-2  align-items-center ">
+                <h6 className="w-25 ">Status</h6>
+                <input
+                  type="text"
+                  className="form-control w-75 "
+                  name="status"
+                  disabled
+                  value={newVM.status}
+                  onChange={handleInputChange}
+                />
+              </div>
+            )}
           </div>
           <div className="modal-footer">
-            {!Boolean(newVM.id)&&<button
-              onClick={()=>{onSave(newVM)}}
-              className="btn btn-primary"
-              disabled={
-                !newVM.resourceGroup||
-                !newVM.vmName ||
-                !newVM.region ||
-                !newVM.vmSize ||
-                !newVM.osImageId ||
-                !newVM.osImageName ||
-                !newVM.securityType ||
-                !newVM.adminUsername ||
-                !newVM.adminPasswordOrKey ||
-                !newVM.authenticationType||isLoading
-              }
+            {!Boolean(newVM.id) && (
+              <button
+                onClick={() => {
+                  onSave(newVM);
+                }}
+                className="btn btn-primary"
+                disabled={
+                  !newVM.resourceGroup ||
+                  !newVM.vmName ||
+                  !newVM.region ||
+                  !newVM.vmSize ||
+                  !newVM.osImageId ||
+                  !newVM.osImageName ||
+                  !newVM.securityType ||
+                  !newVM.adminUsername ||
+                  !newVM.adminPasswordOrKey ||
+                  !newVM.authenticationType ||
+                  isLoading
+                }
+              >
+                Save
+              </button>
+            )}
+            <button
+              onClick={onCancel}
+              className="btn btn-danger"
+              disabled={isLoading}
             >
-              Save
-            </button>}
-            <button onClick={onCancel} className="btn btn-danger" disabled={isLoading}>
               Cancel
             </button>
           </div>
