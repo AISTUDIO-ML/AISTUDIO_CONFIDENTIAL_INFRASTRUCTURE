@@ -62,6 +62,19 @@ export class VmsService {
     }
   }
 
+  async listAllOsImages(): Promise<any[]> {
+    try {
+      await sql.connect(this.dbConfig);
+      const result = await sql.query`SELECT * FROM os_images `;
+      return result.recordset; 
+    } catch (err) {
+      console.error('SQL error', err);
+      throw err;
+    } finally {
+      await sql.close();
+    }
+  }
+
   async getSingleVm(id: string): Promise<any> {
     try {
       await sql.connect(this.dbConfig);

@@ -19,6 +19,11 @@ export class VmsController {
     return this.vmsService.listAllVms(resourceGroup);
   }
 
+  @Get('/listAllOsImages')
+  async listAllOsImages() {
+    return this.vmsService.listAllOsImages();
+  }
+
   @Get('/:id')
   async getSingleVm(@Param('id') id: string) {
     return this.vmsService.getSingleVm(id);
