@@ -46,7 +46,7 @@ export async function deleteVirtualMachine(vm) {
 
 
 
-export async function createAndDeployVm(vm){
+export async function createAndDeployVm(vm, os_image){
   console.log('vm:  ', vm);
   let resourceGroupName =  vm.resourceGroup;
   let vmName = vm.vmName;
@@ -65,20 +65,14 @@ export async function createAndDeployVm(vm){
   console.log('\n\npublicIPInfo: ',publicIPInfo);
   let nsgId = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Network/networkSecurityGroups/`;
   let imageReference ={ 
-    publisher: 'Canonical', 
-    offer: '0001-com-ubuntu-confidential-vm-jammy', 
-    sku: '22_04-lts-cvm', 
-    version: 'latest' 
+    publisher: os_image.publisher, 
+    offer: os_image.offer, 
+    sku: os_image.sku, 
+    version: os_image.version 
   };
 
-  if( vm.osImageId === 'id1') {
+  if( os_image.ostype == 'windows') {
     nsgId = nsgId +  `${resourceGroupName}-windows-nsg`;
-    imageReference ={ 
-      publisher: 'MicrosoftWindowsDesktop', 
-      offer: 'Windows-11', 
-      sku: 'win11-22h2-pro', 
-      version: 'latest' 
-    };
   } else {
     nsgId = nsgId +  `${resourceGroupName}-linux-nsg`;
   }
