@@ -26,9 +26,20 @@ export interface IVM {
   status: string;
 }
 
+export interface IOsImage {
+  id: string;
+  name: string;
+  offer: string;
+  ostype: string;
+  publisher: string;
+  sku: string;
+  version: string;
+}
+
 const BACK_URL = process.env.REACT_APP_BACKEND_URL;
 const VMs = () => {
   const [tenants, setTenants] = useState<Tenant[]>([]);
+  const [osImages, setOsImages] = useState<IOsImage[]>([]);
   const [selectedResource, setSelectedResource] = useState("");
   const [virtualMachines, setVirtualMachines] = useState<IVM[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,10 +58,12 @@ const VMs = () => {
     adminPasswordOrKey: "",
     authenticationType: "",
     status: "",
-    publicIp:"",  });
+    publicIp: "",
+  });
 
   useEffect(() => {
     fetchTenants();
+    getAllOsImages();
   }, []);
 
   useEffect(() => {
@@ -60,6 +73,11 @@ const VMs = () => {
       setVirtualMachines([]);
     }
   }, [selectedResource]);
+
+  const getAllOsImages = async () => {
+    const response = await axios.get(`${BACK_URL}/vms/listAllOsImages`);
+    setOsImages(response.data);
+  };
 
   const fetchTenants = async () => {
     const response = await axios.get(`${BACK_URL}/tenants`);
@@ -129,7 +147,7 @@ const VMs = () => {
                   vmSize: "Standard_DC2as_v5",
                   osImageId: "",
                   osImageName: "",
-                  publicIp:"",
+                  publicIp: "",
                   securityType: "ConfidentialVM",
                   adminUsername: "azureuser",
                   adminPasswordOrKey: "azureuUser!123",
@@ -178,7 +196,7 @@ const VMs = () => {
                         osImageName: vm.osImageName,
                         securityType: vm.securityType,
                         adminUsername: vm.adminUsername,
-                        publicIp:vm.publicIp,
+                        publicIp: vm.publicIp,
                         adminPasswordOrKey: vm.adminPasswordOrKey,
                         authenticationType: vm.authenticationType,
                         status: vm.status,
@@ -204,7 +222,7 @@ const VMs = () => {
                         securityType: vm.securityType,
                         adminUsername: vm.adminUsername,
                         adminPasswordOrKey: vm.adminPasswordOrKey,
-                        publicIp:vm.publicIp,
+                        publicIp: vm.publicIp,
                         authenticationType: vm.authenticationType,
                         status: vm.status,
                       });
@@ -231,6 +249,7 @@ const VMs = () => {
           isLoading={isLoading}
           newVM={newVM}
           setNewVM={setNewVM}
+          osImages={osImages}
         />
       )}
       {showVMActionsModal && (
